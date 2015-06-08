@@ -1,0 +1,57 @@
+//マスク処理http://jsdo.it/dk4kd/wDZe
+//目的、xyzを与えてその地点に円柱の中心を向ける
+$(function() {
+//var canvas = $()
+
+
+    var stage = new createjs.Stage("myCanvas");
+
+    var f_eye = 100;
+    var mask = new createjs.Shape();
+    //circle.grahics.beginFill("red").drawCircle(0,0,80).endFill();
+    mask.x = 100;
+    mask.y = 100;
+    mask.graphics.beginFill("#FFF").drawCircle(0,0,f_eye);
+
+    //ellipse.graphics.arc(75,75,50,0,Math.PI*2, false);
+    var bg = new createjs.Shape();
+    bg.graphics.beginFill("#006699").drawCircle(100,100,f_eye);
+
+    var x=0, y=0, z=1;
+    var dis, rad_w, rad_h, deg;
+    rad_h = 100;
+
+    var ellipse = new createjs.Shape();
+
+    compParam(x, y, z);
+    drawEyeball(dis, rad_w, deg);
+
+    stage.addChild(bg, ellipse);
+    stage.update();
+
+    function compParam(x, y, z){
+	deg = Math.atan2(y, x) * 180/Math.PI;
+	dis = f_eye * x / (z + f_eye);
+	rad_w = rad_h / Math.atan2(f_eye, dis);
+
+	console.log('deg:'+deg+',dis:'+dis+',rad_w:'+rad_w);
+    }
+
+    function drawEyeball(dis, rad_w, deg){
+	console.log('deg:'+deg+',dis:'+dis+',rad_w:'+rad_w);
+	var dis_x =  dis * Math.cos( deg * Math.PI/180 );
+	var dis_y =  dis * Math.sin( deg * Math.PI/180 );
+	console.log('dis_x:'+dis_x+',dis_y:'+dis_y);
+
+	ellipse.graphics.beginFill("red")
+	    .drawEllipse(dis_x, dis_y, rad_w, rad_h);
+	//ellipse.x = dis_x
+	//ellipse.y = dis_y;
+	ellipse.regX = rad_w;
+	ellipse.regY = rad_h;
+	//ellipse.rotation = deg;
+	ellipse.mask = mask;
+    }
+
+});
+
