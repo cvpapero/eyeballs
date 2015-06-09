@@ -1,7 +1,6 @@
 //マスク処理http://jsdo.it/dk4kd/wDZe
 //目的、xyzを与えてその地点に円柱の中心を向ける
 
-/*
 var ros = new ROSLIB.Ros({
     url : 'ws://133.19.23.172:9090'
 });
@@ -17,57 +16,28 @@ ros.on('error', function(error) {
 ros.on('close', function() {
     console.log('Connection to websocket server closed.');
 });
-*/
 
 
-$(window).on('load resize', function() {
+
+
+
+$(function() {
 
     var stage = new createjs.Stage("myCanvas");
 
-    var width = $(window).width();
-    var height = $(window).height();
-    
-    //白目の半径
-    var f_eye = width/6;
+    //目玉の半径
+    var f_eye = 100;
+    //目玉の位置
+    var x_eye = f_eye;
+    var y_eye = f_eye;
 
-    //目と目の間の位置
-    var x_root = width/2;
-    var y_root = height/2;
-
-    //右目の位置
-    var x_eye_right = x_root/2;
-    var x_eye_right = y_root;
-
-    //左目の位置
-    var x_eye_left = x_root*3/2;
-    var x_eye_left = y_root;
-
-    //右目のマスクとまぶたと背景の定義
-    var eye_mask_right = new createjs.Shape();
-    var eye_wink_state_right = 0;
-    var wink_shape_right = new createjs.Shape();
-    var eye_bg_right = new createjs.Shape();
-    eye_mask_right.graphics.beginFill("#FFFFFF").drawCircle(x_eye_right, y_eye_right, f_eye);
-    wink_shape_right.
-	graphics.
-	beginFill("#FFFFFF").
-	drawRect(x_eye_right-f_eye*2, y_eye_right-f_eye*-2*2, f_eye*2, f_eye*2);
-    eye_bg_right.graphics.beginFill("#006699").drawCircle(x_eye_right, y_eye_right, f_eye);
-
-    //左目のマスクとまぶたと背景の定義
-    var eye_mask_left = new createjs.Shape();
-    var eye_wink_state_left = 0;
-    var wink_shape_left = new createjs.Shape();
-    var eye_bg_left = new createjs.Shape();
-    eye_mask_left.graphics.beginFill("#FFFFFF").drawCircle(x_eye_left, y_eye_left, f_eye);
-    wink_shape_left.
-	graphics.
-	beginFill("#FFFFFF").
-	drawRect(x_eye_left-f_eye*2, y_eye_left-f_eye*-2*2, f_eye*2, f_eye*2);
-    eye_bg_left.graphics.beginFill("#006699").drawCircle(x_eye_left, y_eye_left, f_eye);
-
-    var dpi =getDPI();
-    var inch = 0.0254;
+    var mask_eye = new createjs.Shape();
+    mask_eye.graphics.beginFill("#FFFFFF").drawCircle(x_eye, y_eye, f_eye);
+    var wink_state = 0;
+    var wink_shape = new createjs.Shape();
+    wink_shape.graphics.beginFill("#FFFFFF").drawRect(0, f_eye*-2, f_eye*2, f_eye*2);
+    var bg = new createjs.Shape();
+    bg.graphics.beginFill("#006699").drawCircle(x_eye, y_eye, f_eye);
 
     var x = 0, y=0, z=0;
     var goalX, goalY, goalZ;
@@ -76,23 +46,12 @@ $(window).on('load resize', function() {
     var dis, rad_w, rad_h, deg;
     rad_h = f_eye;
 
-    //var ellipse = new createjs.Shape();
+    var ellipse = new createjs.Shape();
+
     var theta, phi;
-    var pupil_right = new createjs.Shape();
-    
-    var pupil_left = new createjs.Shape();
 
+    //init(x, y, z);
 
-    var cliX, cliY, cliZ=2;
-    $(window).mousemove( function(event) {
-	//実世界(x, y, z)に変換する必要がある、、、
-	cliX = (event.clientX - rootX)/dpi*inch;
-	cliY = (event.clientY - rootY)/dpi*inch;
-	console.log('cli---x:'+cliX+', y:'+cliY+', z:'+cliZ);
-	init(cliX, cliY, cliZ);
-    });
-
-/*
     var listener = new ROSLIB.Topic({
 	ros : ros,
 	name : 'face_pos',
@@ -109,31 +68,6 @@ $(window).on('load resize', function() {
 	goalY = subY;
 	goalZ = subZ;
 	stage.addChild(bg, ellipse, wink_shape);
-
-	createjs.Ticker.on("tick", tick);
-	createjs.Ticker.setFPS(30);
-    }
-*/
-    function getDPI() {
-	var dpi = 0,
-	div = document.createElement('div');
-	div.
-	    setAttribute('style', 
-			 'height:1in;left:-100%;top:-100%;position:absolute;width:1in;');
-	document.body.appendChild(div);
-	dpi = div.offsetHeight;
-	document.body.removeChild(div);
-	div = null;
-	
-	return dpi;
-    };
-    
-
-    function init(subX, subY, subZ){
-	goalX = subX;
-	goalY = subY;
-	goalZ = subZ;
-	stage.addChild(eye_bg_right, pupil_right, wink_shape_right);
 
 	createjs.Ticker.on("tick", tick);
 	createjs.Ticker.setFPS(30);
@@ -159,11 +93,10 @@ $(window).on('load resize', function() {
 
 	compParam(x, y, z);
 	drawEyeball(dis, rad_w, deg);
-	//wink();
+	wink();
 	stage.update(event);
     }
 
-/*
     //bgとellipseにマスクをかけwinkのようにみせる
     function wink(){
 
@@ -192,7 +125,6 @@ $(window).on('load resize', function() {
 	}
 	
     }
-*/
 
     function compParam(x, y, z){
 	theta = Math.atan2(z, x);
