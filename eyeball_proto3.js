@@ -7,7 +7,7 @@ $(function() {
     var stage = new createjs.Stage("myCanvas");
 
     //目玉の半径
-    var f_eye = 300;
+    var f_eye = 200;
     var pupil = 100;
     //目玉の位置
     var x_eye = f_eye;
@@ -30,7 +30,7 @@ $(function() {
     bg.graphics.beginFill("#006699").drawCircle(x_eye, y_eye, f_eye);
 
 
-    var x = 1, y=0, z=1;
+    var x = 0, y=0, z=1;
     var dis, rad_w, rad_h, deg;
     rad_h = f_eye;
 
@@ -48,15 +48,19 @@ $(function() {
     }
 
     function tick(event){
+	//if(0 <= x && x < 1)
+	px = Math.sin(x);
 	x = x + 0.1;
-	if(x > 1){
+/*
+	else if(x > 1){
 	    x = 0; 
 	    //rad_w = 100;
 	    //ellipse.clear();
 	}
-	compParam(x, y, z);
+*/
+	compParam(px, y, z);
 	drawEyeball(dis, rad_w, deg);
-	wink(x);
+	//wink(x);
 	stage.update(event);
     }
 

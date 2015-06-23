@@ -1,0 +1,15 @@
+#eyeBallR {
+    height: 50%;
+    width: 50%;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#eyeBallL {
+    height: 50%;
+    width: 50%;
+    position: absolute;
+    left: 50%;
+    top: 0;
+}

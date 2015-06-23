@@ -1,3 +1,17 @@
+/*
+2015.6.10
+問題
+処理が遅いのは、一秒に数回アニメーションしているから
+必要な時だけアニメーションするようにしたい
+canvasを使う方が良いと思う
+
+2目がそっちの方向を向かない
+
+*/
+
+
+
+
 //マスク処理http://jsdo.it/dk4kd/wDZe
 //目的、xyzを与えてその地点に円柱の中心を向ける
 //クリック時に更新する
@@ -26,7 +40,7 @@ ros.on('close', function() {
 $(function() {
 
     $( '#myCanvas' ).get( 0 ).width = $( window ).width();
-    $( '#myCanvas' ).get( 0 ).height = $( window ).height();
+    $( '#myCanvas' ).get( 0 ).height = $( window ).height()-100;
 
     var stage = new createjs.Stage("myCanvas");
 
@@ -35,7 +49,7 @@ $(function() {
    
     var dpr = window.devicePixelRatio;
     var dpi = 96;
-    var inch = 2.54;//0.0254;
+    var inch = 0.0254;
 
     console.log('width:'+width+',height:'+height+',dpr:'+dpr);
     console.log('realwidth:'+width/(dpi*dpr)*inch+',height:'+height/(dpi*dpr)*inch); 
@@ -69,7 +83,7 @@ $(function() {
     var x = [], y = [], z = [];
     var goalX = [], goalY, goalZ;
     var diff = 0.1, th = 0.1;
-    var frame = 10;
+    var frame = 1;
     //var dis = [], radW = [], radH = [], deg = [];
     var dis=[], radW=[], radH, deg=[];
     //var theta, phi;
@@ -99,14 +113,24 @@ $(function() {
     }
 
 
-    var cliX, cliY, cliZ=2;
+    var cliX, cliY, cliZ=0.5;
 
-    $(window).mouseup( function(event) {
+    $(window).mousedown( function(event) {
 	//実世界(x, y, z)に変換する必要がある、、、
-	cliX = pixelToMeter(event.clientX - rootX);
-	cliY = pixelToMeter(event.clientY - rootY);
-	console.log('cli---x:'+cliX+', y:'+cliY+', z:'+cliZ);
+	cliX = pixelToMeter(event.clientX - rootX)*10;
+	cliY = pixelToMeter(rootY - event.clientY)*10;
+	//console.log('cli---x:'+cliX+', y:'+cliY+', z:'+cliZ);
+	//$("#output").text(str);
 	init(cliX, cliY, cliZ);
+    });
+
+  $(window).mousemove( function(event) {
+      //実世界(x, y, z)に変換する必要がある、、、
+      cliX = pixelToMeter(event.clientX - rootX);
+      cliY = pixelToMeter(rootY - event.clientY);
+      var str = 'eye:'+ pixelToMeter(eyeX[1]-eyeX[0]) +', x:'+cliX+'  y:'+cliY+'  z:'+cliZ;
+      $("#output").text(str);
+      //init(cliX, cliY, cliZ);
     });
 
     function pixelToMeter(pix) {
@@ -114,38 +138,50 @@ $(function() {
     }
 
     function init(subX, subY, subZ){
-	var disM = Math.sqrt(subX*subX+subY*subY+subZ*subZ);
-
+	var disM = Math.sqrt(subX*subX+subZ*subZ);
+	var disEye = pixelToMeter(rootX-eyeX[0]);
 	//for(var i = 0; i < 2; ++i){
-	goalX[0] = subX - disM*Math.cos(Math.atan2(subZ, subX));
-	goalX[1] = subX + disM*Math.cos(Math.PI - Math.atan2(subZ, subX));
+	goalX[0] = subX + disEye;
+	goalX[1] = subX - disEye;
 	goalY = subY;
 	goalZ = subZ;
+
+	var str = 'diseye:'+ disEye +', x:'+subX+'  y:'+subY+'  z:'+subZ;
+	$("#output").text(str);
+	var str2 = 'goalx0:'+goalX[0]+'  goalx1:'+goalX[1]+' disM:'+disM;
+	$("#rotate").text(str2);
+
 	//}
 	for(var i = 0; i < 2 ; ++i){
 	    stage.addChild(eye_bg[i], pupil[i], wink_shape[i]);
 	}
 	createjs.Ticker.on("tick", tick);
-	createjs.Ticker.setFPS(60);
+	createjs.Ticker.setFPS(1);
     }
 
     function tick(event){
-
+	var paused;
 	for(var i = 0; i < 2; ++i){
 	    var deltaX = (goalX[i] - x[i])/frame;
 	    var deltaY = (goalY - y[i])/frame;
 	    var deltaZ = (goalZ - z[i])/frame;
 	    
-	    if( Math.abs( goalX[i] - x[i] ) > th ){
+	    //var str = 'stop ok';
+	    if( Math.abs( goalX[i] - x[i] ) > th 
+		&& Math.abs( goalY - y[i] ) > th 
+		&& Math.abs( goalZ - z[i] ) > th ){
 		x[i] = x[i] + deltaX;
-	    }
-	    if( Math.abs( goalY - y[i] ) > th ){
 		y[i] = y[i] + deltaY;
-	    }
-	    if( Math.abs( goalZ - z[i] ) > th ){
 		z[i] = z[i] + deltaZ;
+		paused = false;//createjs.Ticker.getPaused();
+
+	    }else{
+		paused = true;//!createjs.Ticker.getPaused();
 	    }
-	    
+	    console.log('paused:'+paused);
+	    //createjs.Ticker.setPaused(paused);
+	    //$("#output").text(str);
+
 	    //console.log('x:'+x[i]+', y:'+y[i]+', z:'+z[i]);
 	    
 	    compParam(i, x[i], y[i], z[i]);
@@ -193,7 +229,7 @@ $(function() {
 	dis[i] = eyeR / Math.tan( theta );
 	radW[i] = eyeR / Math.sin( theta );
 
-	console.log('comParam--deg:'+deg+',dis:'+dis+',radW:'+radW);
+	console.log('deg['+i+ ']:'+deg[i]+',dis:'+dis[i]+',radW:'+radW[i]);
     }
 
     function drawEyeball(i, dis, radW, deg){

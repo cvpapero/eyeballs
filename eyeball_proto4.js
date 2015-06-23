@@ -26,7 +26,7 @@ $(function() {
     var stage = new createjs.Stage("myCanvas");
 
     //目玉の半径
-    var f_eye = 100;
+    var f_eye = 200;
     //目玉の位置
     var x_eye = f_eye;
     var y_eye = f_eye;
@@ -42,7 +42,7 @@ $(function() {
     var x = 0, y=0, z=0;
     var goalX, goalY, goalZ;
     var diff = 0.1, th = 0.1;
-    var frame = 30;
+    var frame = 10;
     var dis, rad_w, rad_h, deg;
     rad_h = f_eye;
 
@@ -93,7 +93,7 @@ $(function() {
 
 	compParam(x, y, z);
 	drawEyeball(dis, rad_w, deg);
-	wink();
+	//wink();
 	stage.update(event);
     }
 

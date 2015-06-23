@@ -193,7 +193,7 @@ $(function() {
 	dis[i] = eyeR / Math.tan( theta );
 	radW[i] = eyeR / Math.sin( theta );
 
-	console.log('comParam--deg:'+deg+',dis:'+dis+',radW:'+radW);
+	//console.log('comParam--deg:'+deg+',dis:'+dis+',radW:'+radW);
     }
 
     function drawEyeball(i, dis, radW, deg){
