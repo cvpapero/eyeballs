@@ -19,7 +19,6 @@ ros.on('close', function() {
 });
 
 
-
 $(function(){
 
     var before_draw = 0;
@@ -34,16 +33,10 @@ $(function(){
     listener.subscribe(function(msg){
 	$('#state').text('now_state:'+msg.state);
 	$('#fps').text('fps:'+msg.fps);
-	var date1 = new Date();
-	//before_draw = date1.getMilliseconds();
-	//if(msg.right.x && msg.left.x)
+	//var date1 = new Date();
 	draw_eyes( msg );
-	var date2 = new Date();
-	//after_draw = date2.getMilliseconds();
-	$('#drawtime').text('window update:'+ (date2-date1)/1000. +'[s]');
-	//$('#drawfps').text('brink count:'+ int(deg_count/8) +'[count]');
-	//else
-	  //  wait_eyes();
+	//var date2 = new Date();
+	$('#drawtime').text('window update:'+ (after_draw-before_draw)/1000. +'[s]');
     });
 
 
@@ -55,13 +48,10 @@ $(function(){
 
     var canvas = [];
     canvas = $('#eyeBalls')[0];
-    //canvas[1] = $('#eyeBallL')[0];
 
-    var frame, mask = [], pupil;
+    var frame, pupil;
     frame = canvas.getContext('2d');
-    //frame[1] = canvas.getContext('2d');
     pupil = canvas.getContext('2d');
-    //pupil[1] = canvas.getContext('2d');
 
     var rootX = width/2;
     var rootY = height/2;
@@ -75,21 +65,14 @@ $(function(){
     bEyeY[0] = rootY;
 
     bEyeX[1] = 3*rootX/2;
-    bEyeY[1] = rootY;
-
-    var xx = 0; 
-
-
-    //draw_eyes();
-    
+    bEyeY[1] = rootY;  
 
     var pux_rand = 100;   
-    var wink_count = 0; 
     var deg_count = 0;
 
 
     function draw_eyes( msg ){
-
+	before_draw = new Date();
 	var pux;
 
 	if( msg ){
@@ -112,7 +95,6 @@ $(function(){
 	    pupil.save();
 	    pupil.clearRect(0, 0, width, height);
  
-
 	    //目の縁
 	    pupil.beginPath();
 	    pupil.arc(bEyeX[0], bEyeY[0], radius, 0, Math.PI*2, true);
@@ -137,25 +119,17 @@ $(function(){
 	    pupil.beginPath();
 	    pupil.arc(bEyeX[0], bEyeY[0], radius, rad_start, rad_end, false);
 	    pupil.closePath(); 
-	    //pupil.fill();
 	    pupil.stroke();
 
 	    pupil.beginPath();
 	    pupil.arc(bEyeX[1], bEyeY[1], radius, rad_start, rad_end, false);
 	    pupil.closePath();
-	    //pupil.fill(); 
 	    pupil.stroke();
 
 	    //まぶた以外の場所をクリッピング
-
 	    pupil.beginPath();
 	    pupil.arc(bEyeX[0], bEyeY[0], radius, rad_start, rad_end, false);
-	    //pupil.closePath(); 
-	    //pupil.moveTo(bEyeX[1], bEyeY[1]);
 	    pupil.arc(bEyeX[1], bEyeY[1], radius, rad_start, rad_end, false);
-	    //pupil.closePath();
-
-	    //pupil.stroke();
 	    pupil.clip();
 
 	    pupil.beginPath();
@@ -167,43 +141,8 @@ $(function(){
 	    pupil.fill();
 	    pupil.restore(); 	    
 	}
+	after_draw = new Date();
     }
-
-    var count = 0;
-    function wait_eyes(){
-	
-	var pux = count % 2 * 10;
-	
-	++count;
-
-	draw_pupil( pux );
-
-	function draw_pupil( px ){
-	    pupil.clearRect(0, 0, width, height);
-	    var rad_start = 0*(Math.PI/180.);
-	    var rad_end = 180*(Math.PI/180.); 
-	    //まぶたを描く
-	    pupil.beginPath();
-	    pupil.arc(bEyeX[0], bEyeY[0], radius, rad_start, rad_end);
-	    pupil.closePath(); 
-	    pupil.moveTo(bEyeX[1]+radius , bEyeY[1]);
-	    pupil.arc(bEyeX[1], bEyeY[1], radius, rad_start, rad_end);
-	    pupil.closePath();
-	    pupil.stroke();
-	    pupil.clip();
-
-	    pupil.beginPath();
-	    pupil.arc(bEyeX[0], bEyeY[0], radius/2, 0, Math.PI*2);
-	    pupil.fill();
-	    
-	    pupil.beginPath();	  
-	    pupil.arc(bEyeX[1], bEyeY[1], radius/2, 0, Math.PI*2);
-	    pupil.fill();
-	    	    
-	}
-    }
-
-
 
 });
 
