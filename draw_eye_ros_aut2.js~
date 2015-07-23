@@ -180,7 +180,7 @@ $(function(){
 	    }
 */	    
 	    rx = look_rx;
-	    lx = look_lx;
+	    lx = look_rx;
 
 	    break;
 	case 2:
@@ -200,21 +200,15 @@ $(function(){
 	    }
 */
 	    rx = look_rx;
-	    lx = look_lx;
+	    lx = look_rx;
 	    break;
 	case 3:
-	    //rx = -1*gap;
-	    //lx = -1*gap;
-	    rx = look_rx;
-	    lx = look_lx;
-	    
+	    rx = -1*gap;
+	    lx = -1*gap;
 	    break;
 	case 4:
-	    //rx = gap*Math.sin(state4*10*Math.PI/180.);
-	    //lx = gap*Math.sin(state4*10*Math.PI/180.);
-	    rx = look_rx;
-	    lx = look_lx;
-
+	    rx = gap*Math.sin(state4*10*Math.PI/180.);
+	    lx = gap*Math.sin(state4*10*Math.PI/180.);
 	    state4+=1;
 	    break;
 	default:
@@ -242,9 +236,9 @@ $(function(){
     //サブスクライブ待ちのとき呼び出す
     setInterval(function(){
 	var interval_state = state; 
-	var interval_blink = blink_random(0, 200);
+	var interval_blink = blink_random(0, 100);
 	draw_eyes(interval_state, interval_blink);	
-    }, 50);
+    }, 100);
 
    function blink_random(min, max){
        var br;

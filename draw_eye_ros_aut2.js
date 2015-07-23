@@ -82,8 +82,14 @@ $(function(){
     //var end_array =   [270,220,180,140,90,140,180,220];
 
     //まぶたの大きさ
-    var start_array = [-90, -40, 0, 90, 90, 90, 0, -40];
-    var end_array =   [270,220, 180,90, 90, 90, 180, 220];
+    //var start_array = [-90, -40, 0, 90, 90, 90, 0, -40];
+    //var end_array =   [270,220, 180,90, 90, 90, 180, 220];
+    var start_array = [-90, -40, -20,  0, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90,  0, -20, -40];
+    var end_array =   [270, 220, 200,180, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 180, 200, 220];
+
+    //var start_array = [-90, -80, -70, -60, -50, -40, -30, -20, 0, 90, 90, 90, 0, -40];
+    //var end_array =   [270, 260, 250, 240, 230, 220, 210, 190,180,90, 90, 90, 180, 220];
+
 
     var blink = 1;
     var blink_state = false;
@@ -180,7 +186,7 @@ $(function(){
 	    }
 */	    
 	    rx = look_rx;
-	    lx = look_lx;
+	    lx = look_rx;
 
 	    break;
 	case 2:
@@ -200,21 +206,15 @@ $(function(){
 	    }
 */
 	    rx = look_rx;
-	    lx = look_lx;
+	    lx = look_rx;
 	    break;
 	case 3:
-	    //rx = -1*gap;
-	    //lx = -1*gap;
-	    rx = look_rx;
-	    lx = look_lx;
-	    
+	    rx = -1*gap;
+	    lx = -1*gap;
 	    break;
 	case 4:
-	    //rx = gap*Math.sin(state4*10*Math.PI/180.);
-	    //lx = gap*Math.sin(state4*10*Math.PI/180.);
-	    rx = look_rx;
-	    lx = look_lx;
-
+	    rx = gap*Math.sin(state4*10*Math.PI/180.);
+	    lx = gap*Math.sin(state4*10*Math.PI/180.);
 	    state4+=1;
 	    break;
 	default:
@@ -240,11 +240,11 @@ $(function(){
     }
     
     //サブスクライブ待ちのとき呼び出す
-    setInterval(function(){
-	var interval_state = state; 
-	var interval_blink = blink_random(0, 200);
-	draw_eyes(interval_state, interval_blink);	
-    }, 50);
+/*
+    setInterval(, 100);
+*/
+
+
 
    function blink_random(min, max){
        var br;
@@ -256,6 +256,20 @@ $(function(){
 	   return true;
    }
 
+    function animation_frame(){
+	var interval_state = state; 
+	var interval_blink = blink_random(0, 100);
+	draw_eyes(interval_state, interval_blink);
+	requestAnimationFrame(animation_frame);	
+    }
+
+    (function() {
+	var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame ||
+            window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+	window.requestAnimationFrame = requestAnimationFrame;
+    })();
+
+    requestAnimationFrame(animation_frame);
 });
 
 
