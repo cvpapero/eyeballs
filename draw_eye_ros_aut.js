@@ -23,7 +23,7 @@ ros.on('close', function() {
 
 $(function(){
 
-    var look_rx, look_lx;
+    var look_rx = 0, look_lx = 0;
 
     var listener = new ROSLIB.Topic({
 	ros : ros,
@@ -92,7 +92,7 @@ $(function(){
     var blink_count = 0;
 
     //現在の状態保持
-    var state = 4;
+    var state = 1;
 
     //目の縁の描画
     function draw_edges(){
@@ -146,14 +146,15 @@ $(function(){
 
     var rx = 0;
     var lx = 0;
+    var scale = 0.5;
 
     //瞳の描画
-    function draw_pupils( rx, lx ){
+    function draw_pupils( rx, lx, scale ){
 	pupil.beginPath();
-	pupil.arc(bEyeX[0]+rx, bEyeY[0], radius/2, 0, Math.PI*2);
+	pupil.arc(bEyeX[0]+rx, bEyeY[0], radius*scale, 0, Math.PI*2);
 	pupil.fill();
 	pupil.beginPath();	  
-	pupil.arc(bEyeX[1]+lx, bEyeY[1], radius/2, 0, Math.PI*2);
+	pupil.arc(bEyeX[1]+lx, bEyeY[1], radius*scale, 0, Math.PI*2);
 	pupil.fill();
     }
 
@@ -170,7 +171,7 @@ $(function(){
 	      3.1へ
 	      ただし、a>b
 	    */
-/*
+
 	    if(rx > 0){
 		rx = -1*micro_gap;
 		lx = -1*micro_gap;
@@ -178,9 +179,9 @@ $(function(){
 		rx = micro_gap;
 		lx = micro_gap;
 	    }
-*/	    
-	    rx = look_rx;
-	    lx = look_lx;
+	    scale = 0.4;
+	    //rx = look_rx;
+	    //lx = look_lx;
 
 	    break;
 	case 2:
@@ -190,7 +191,7 @@ $(function(){
 	      3.1へ
 	      ただし、a>b
 	    */
-/*
+
 	    if(rx > 0){
 		rx = -1*micro_gap;
 		lx = -1*micro_gap;
@@ -198,22 +199,29 @@ $(function(){
 		rx = micro_gap;
 		lx = micro_gap;
 	    }
-*/
-	    rx = look_rx;
-	    lx = look_lx;
+	    scale = 0.55;
+	    //rx = look_rx;
+	    //lx = look_lx;
 	    break;
 	case 3:
 	    //rx = -1*gap;
 	    //lx = -1*gap;
 	    rx = look_rx;
 	    lx = look_lx;
-	    
+	    scale = 0.55;
 	    break;
 	case 4:
 	    //rx = gap*Math.sin(state4*10*Math.PI/180.);
 	    //lx = gap*Math.sin(state4*10*Math.PI/180.);
-	    rx = look_rx;
-	    lx = look_lx;
+	    if(rx > 0){
+		rx = -1*micro_gap;
+		lx = -1*micro_gap;
+	    }else{
+		rx = micro_gap;
+		lx = micro_gap;
+	    }
+
+	    scale = 0.4;
 
 	    state4+=1;
 	    break;
@@ -235,7 +243,7 @@ $(function(){
 	//瞳の移動の計算
 	pupils(eye_state);
 	//瞳の描画
-	draw_pupils(rx, lx);
+	draw_pupils(rx, lx, scale);
 	pupil.restore(); 	    		
     }
     
