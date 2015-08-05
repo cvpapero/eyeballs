@@ -35,6 +35,8 @@ $(function(){
 	$('#state').text('now_state:'+msg.state);
 	$('#fps').text('fps:'+msg.fps);
 
+	$('#dir').text('dir hor:'+msg.dir.h+', ver:'+msg.dir.v+', conf:'+msg.dir.conf);
+
 	state = msg.state;
 	blink = msg.blink;
 
@@ -179,7 +181,7 @@ $(function(){
 		rx = micro_gap;
 		lx = micro_gap;
 	    }
-	    scale = 0.4;
+	    scale = 0.45;
 	    //rx = look_rx;
 	    //lx = look_lx;
 
@@ -199,7 +201,7 @@ $(function(){
 		rx = micro_gap;
 		lx = micro_gap;
 	    }
-	    scale = 0.55;
+	    scale = 0.5;
 	    //rx = look_rx;
 	    //lx = look_lx;
 	    break;
@@ -208,7 +210,7 @@ $(function(){
 	    //lx = -1*gap;
 	    rx = look_rx;
 	    lx = look_lx;
-	    scale = 0.55;
+	    scale = 0.5;
 	    break;
 	case 4:
 	    //rx = gap*Math.sin(state4*10*Math.PI/180.);
