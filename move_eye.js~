@@ -124,6 +124,7 @@ $(function(){
     var gap = 40;
     var speed = 5
     var cnt = 0;
+    /*
     var look_x=0 
     var max = 100, min = -100;
     //瞳の移動量の決定
@@ -159,8 +160,14 @@ $(function(){
 	default:
 	    break;
 	} 
-	console.log('rx:'+rx)
-	cnt += 1
+	console.log('rx:'+rx);
+	cnt += 1;
+    }
+    */
+    function pupils_(state){
+	rx = gap*Math.sin(cnt*speed*Math.PI/180.);
+	lx = rx;
+	cnt += 1;
     }
 
     var time_accum = 0;
@@ -174,7 +181,7 @@ $(function(){
 	//まぶた
 	eyelids(eye_blink);
 	//瞳の移動の計算
-	pupils(eye_state);
+	pupils_(eye_state);
 	//瞳の描画
 	draw_pupils(rx, lx, enlarge);
 	pupil.restore(); 	    		

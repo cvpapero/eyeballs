@@ -1,6 +1,6 @@
 
 $(function(){
-
+ 
     $( '#eyeBalls' ).get( 0 ).width = $( window ).width();
     $( '#eyeBalls' ).get( 0 ).height = $( window ).height();
 
